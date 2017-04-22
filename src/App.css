@@ -12,3 +12,9 @@
 .App-intro {
   font-size: large;
 }
+
+.App-deviceData {
+  margin: 0 auto;
+  text-align: left;
+  width: 300px;
+}

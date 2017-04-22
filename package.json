@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "fulltilt": "https://github.com/adtile/Full-Tilt.git",
+    "gyronorm": "^2.0.6",
     "react": "^15.5.4",
     "react-dom": "^15.5.4"
   },
