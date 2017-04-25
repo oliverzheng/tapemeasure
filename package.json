@@ -5,6 +5,7 @@
   "dependencies": {
     "fulltilt": "https://github.com/adtile/Full-Tilt.git",
     "gyronorm": "^2.0.6",
+    "invariant": "^2.2.2",
     "react": "^15.5.4",
     "react-dom": "^15.5.4"
   },

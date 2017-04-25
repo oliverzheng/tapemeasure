@@ -5,6 +5,8 @@ import React, { Component } from 'react';
 import FullTilt from 'fulltilt/dist/fulltilt.js'; // needed for gyronorm
 import GyroNorm from 'gyronorm';
 
+import invariant from 'invariant';
+
 import './App.css';
 
 class App extends Component {
@@ -45,6 +47,12 @@ class App extends Component {
       return null;
     }
 
+    const dv = computeDirectionalVectors(
+      deviceData.do.alpha,
+      deviceData.do.beta,
+      deviceData.do.gamma,
+    );
+
     return (
       <div className="App-deviceData">
         <div>
@@ -69,6 +77,15 @@ class App extends Component {
               // When standing up, how rotated it is by tilting head.
               deviceData.do.gamma
             }
+            <br />
+          </pre>
+          <p>Directional Vectors:</p>
+          <pre>
+            X: {JSON.stringify(dv.x, null, '  ')}
+            <br />
+            Y: {JSON.stringify(dv.y, null, '  ')}
+            <br />
+            Z: {JSON.stringify(dv.z, null, '  ')}
             <br />
           </pre>
           <p>Device Motion:</p>
@@ -101,6 +118,84 @@ class App extends Component {
       return ' ' + floatNum.toString();
     }
   }
+}
+
+
+type Vector = Array<number>;
+type Matrix = Array<Vector>;
+
+function multiplyMatrix(m1: Matrix, m2: Matrix): Matrix {
+  invariant(
+    m1.every(row => row.length === m1[0].length),
+    'Every row must be the same length',
+  );
+  invariant(
+    m2.every(row => row.length === m2[0].length),
+    'Every row must be the same length',
+  );
+  invariant(m1[0].length === m2.length, 'm1 width must === m2.height');
+
+  const resultWidth = m2[0].length;
+  const resultHeight = m1[0].length;
+
+  return Array(resultHeight).fill(null).map((_, rowIndex) =>
+    Array(resultWidth).fill(null).map((_, columnIndex) =>
+      m1[rowIndex].map(
+        (m1Value, i) => m1Value * m2[i][columnIndex]
+      ).reduce((a, b) => a + b)
+    )
+  );
+}
+
+function multiplyMatrixWithVector(matrix: Matrix, vector: Vector): Vector {
+  const result = multiplyMatrix(matrix, vector.map(val => [val]));
+  return result.map(row => row[0]);
+}
+
+function degreesToRadians(degrees: number): number {
+  return degrees * Math.PI / 180;
+}
+
+function getRotationMatrixAroundX(radians: number): Matrix {
+  return [
+    [1, 0,                  0                ],
+    [0, Math.cos(radians), -Math.sin(radians)],
+    [0, Math.sin(radians),  Math.cos(radians)],
+  ];
+}
+
+function getRotationMatrixAroundY(radians: number): Matrix {
+  return [
+    [ Math.cos(radians), 0, Math.sin(radians)],
+    [ 0,                 1, 0                ],
+    [-Math.sin(radians), 0, Math.cos(radians)],
+  ];
+}
+
+function getRotationMatrixAroundZ(radians: number): Matrix {
+  return [
+    [Math.cos(radians), -Math.sin(radians), 0],
+    [Math.sin(radians),  Math.cos(radians), 0],
+    [0,                  0                , 1],
+  ];
+}
+
+const UNIT_VECTOR_X: Vector = [1, 0, 0];
+const UNIT_VECTOR_Y: Vector = [0, 1, 0];
+const UNIT_VECTOR_Z: Vector = [0, 0, 1];
+
+function computeDirectionalVectors(alpha, beta, gamma): {x: Vector, y: Vector, z: Vector} {
+  const rotationMatrix = [
+    // Order matters, and this is what W3C specified this to be
+    getRotationMatrixAroundZ(degreesToRadians(alpha)),
+    getRotationMatrixAroundX(degreesToRadians(beta)),
+    getRotationMatrixAroundY(degreesToRadians(gamma)),
+  ].reduce((m1, m2) => multiplyMatrix(m1, m2));
+  return {
+    x: multiplyMatrixWithVector(rotationMatrix, UNIT_VECTOR_X),
+    y: multiplyMatrixWithVector(rotationMatrix, UNIT_VECTOR_Y),
+    z: multiplyMatrixWithVector(rotationMatrix, UNIT_VECTOR_Z),
+  };
 }
 
 export default App;
