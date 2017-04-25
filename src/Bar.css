@@ -1,0 +1,32 @@
+.Bar {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #CCC;
+  height: 20px;
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.Bar-middle {
+  position: absolute;
+  width: 0px;
+  height: 100%;
+  border-right: 1px solid #CCC;
+  left: 50%;
+  top: 0;
+}
+
+.Bar-length {
+  height: 100%;
+  background: #0D0;
+  position: absolute;
+  top: 0;
+}
+
+.Bar-positive {
+  left: 50%;
+}
+
+.Bar-negative {
+  right: 50%;
+}

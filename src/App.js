@@ -7,6 +7,8 @@ import GyroNorm from 'gyronorm';
 
 import invariant from 'invariant';
 
+import Bar from './Bar';
+
 import './App.css';
 
 class App extends Component {
@@ -79,33 +81,26 @@ class App extends Component {
             }
             <br />
           </pre>
-          <p>Directional Vectors:</p>
-          <pre>
-            X: {JSON.stringify(dv.x, null, '  ')}
-            <br />
-            Y: {JSON.stringify(dv.y, null, '  ')}
-            <br />
-            Z: {JSON.stringify(dv.z, null, '  ')}
-            <br />
-          </pre>
-          <p>Device Motion:</p>
-          <pre>
-            X: {
-              // Relative to phone: left right when looking at phone
-              this._convertFloatToString(deviceData.dm.x)
-            }
-            <br />
-            Y: {
-              // Up down when looking at phone
-              this._convertFloatToString(deviceData.dm.y)
-            }
-            <br />
-            Z: {
-              // Towards and away when looking at phone
-              this._convertFloatToString(deviceData.dm.z)
-            }
-            <br />
-          </pre>
+
+          <p>Directional X:</p>
+          <Bar length={dv.x[0]} />
+          <Bar length={dv.x[1]} />
+          <Bar length={dv.x[2]} />
+          <p>Directional Y:</p>
+          <Bar length={dv.y[0]} />
+          <Bar length={dv.y[1]} />
+          <Bar length={dv.y[2]} />
+          <p>Directional Z:</p>
+          <Bar length={dv.z[0]} />
+          <Bar length={dv.z[1]} />
+          <Bar length={dv.z[2]} />
+
+          <p>Device Motion X:</p>
+          <Bar length={deviceData.dm.x / 10} />
+          <p>Device Motion Y:</p>
+          <Bar length={deviceData.dm.y / 10} />
+          <p>Device Motion Z:</p>
+          <Bar length={deviceData.dm.z / 10} />
         </div>
       </div>
     );
