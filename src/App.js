@@ -1,3 +1,5 @@
+/** @flow */
+
 import React, { Component } from 'react';
 // eslint-disable-next-line
 import FullTilt from 'fulltilt/dist/fulltilt.js'; // needed for gyronorm
@@ -7,7 +9,7 @@ import './App.css';
 
 class App extends Component {
   _gn = new GyroNorm();
-  state = {
+  state: {deviceData: ?Object} = {
     deviceData: null,
   };
 
@@ -23,7 +25,7 @@ class App extends Component {
     this._gn.stop();
   }
 
-  _onDeviceUpdate = (data) => {
+  _onDeviceUpdate = (data: Object) => {
     this.setState({
       deviceData: data,
     });
@@ -92,11 +94,11 @@ class App extends Component {
     );
   }
 
-  _convertFloatToString(float) {
-    if (float < 0) {
-      return float.toString();
+  _convertFloatToString(floatNum: number) {
+    if (floatNum < 0) {
+      return floatNum.toString();
     } else {
-      return ' ' + float.toString();
+      return ' ' + floatNum.toString();
     }
   }
 }
